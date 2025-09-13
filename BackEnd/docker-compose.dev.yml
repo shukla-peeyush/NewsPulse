@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: newspulse_postgres_dev
+    environment:
+      POSTGRES_DB: newspulse_dev
+      POSTGRES_USER: newspulse_user
+      POSTGRES_PASSWORD: newspulse_password
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U newspulse_user -d newspulse_dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: newspulse_redis_dev
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_dev_data:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # NewsPulse API Application (Development)
+  api:
+    build:
+      context: .
+      target: development
+    container_name: newspulse_api_dev
+    environment:
+      - DATABASE_URL=postgresql://newspulse_user:newspulse_password@postgres:5432/newspulse_dev
+      - REDIS_URL=redis://redis:6379/0
+      - PYTHONPATH=/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - .:/app
+      - /app/venv
+    command: ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+
+volumes:
+  postgres_dev_data:
+    driver: local
+  redis_dev_data:
+    driver: local
+
+networks:
+  default:
+    name: newspulse_dev_network

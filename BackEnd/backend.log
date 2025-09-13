@@ -1,0 +1,44 @@
+/Library/Python/3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+INFO:     Started server process [18254]
+INFO:     Waiting for application startup.
+2025-09-13 20:08:36,757 - app.main - INFO - Starting NewsPulse application...
+2025-09-13 20:08:36,760 - app.database.connection - INFO - Database connection successful
+2025-09-13 20:08:36,760 - app.database.connection - INFO - Database tables created successfully
+2025-09-13 20:08:36,760 - app.main - INFO - Database initialized successfully
+INFO:     Application startup complete.
+ERROR:    [Errno 48] error while attempting to bind on address ('127.0.0.12025-09-13 20:08:44,964 - app.database.connection - INFO - Database connection successful
+2025-09-13 20:08:44,973 - app.main - ERROR - Error getting database stats: (sqlite3.OperationalError) no such column: articles.processed
+[SQL: SELECT count(*) AS count_1 
+FROM (SELECT articles.id AS articles_id, articles.source_id AS articles_source_id, articles.title AS articles_title, articles.link AS articles_link, articles.summary AS articles_summary, articles.content AS articles_content, articles.published_date AS articles_published_date, articles.content_hash AS articles_content_hash, articles.relevance_score AS articles_relevance_score, articles.primary_category AS articles_primary_category, articles.confidence_level AS articles_confidence_level, articles.processed AS articles_processed, articles.created_at AS articles_created_at, articles.updated_at AS articles_updated_at 
+FROM articles) AS anon_1]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+Starting NewsPulse v1.0.0
+API will be available at: http://127.0.0.1:8000
+API Documentation: http://127.0.0.1:8000/docs
+Health Check: http://127.0.0.1:8000/health
+INFO:     127.0.0.1:57494 - "GET /health HTTP/1.1" 200 OK
+2025-09-13 20:08:45,109 - app.database.connection - INFO - Database connection successful
+2025-09-13 20:08:45,110 - app.main - ERROR - Error getting database stats: (sqlite3.OperationalError) no such column: articles.processed
+[SQL: SELECT count(*) AS count_1 
+FROM (SELECT articles.id AS articles_id, articles.source_id AS articles_source_id, articles.title AS articles_title, articles.link AS articles_link, articles.summary AS articles_summary, articles.content AS articles_content, articles.published_date AS articles_published_date, articles.content_hash AS articles_content_hash, articles.relevance_score AS articles_relevance_score, articles.primary_category AS articles_primary_category, articles.confidence_level AS articles_confidence_level, articles.processed AS articles_processed, articles.created_at AS articles_created_at, articles.updated_at AS articles_updated_at 
+FROM articles) AS anon_1]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+INFO:     127.0.0.1:57497 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57516 - "GET /articles HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:57521 - "GET /articles HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:57570 - "GET /articles HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:57573 - "GET /articles HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:57598 - "GET /articles HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:57604 - "GET /articles HTTP/1.1" 500 Internal Server Error
+2025-09-13 20:10:52,820 - app.database.connection - INFO - Database connection successful
+INFO:     127.0.0.1:57608 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57616 - "GET /sources HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57768 - "OPTIONS /categories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57768 - "GET /categories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57768 - "GET /categories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57775 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57775 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:57823 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57823 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57825 - "GET /categories HTTP/1.1" 200 OK

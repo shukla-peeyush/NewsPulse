@@ -1,0 +1,21 @@
+{
+  "name": "newspulse-fullstack",
+  "version": "1.0.0",
+  "description": "Full-stack news aggregation application",
+  "scripts": {
+    "dev": "concurrently \"npm run backend\" \"npm run frontend\"",
+    "backend": "cd BackEnd && python run_server.py",
+    "frontend": "cd FrontEnd/news-app && npm run dev",
+    "install-all": "npm run install-backend && npm run install-frontend",
+    "install-backend": "cd BackEnd && pip install -r requirements.txt",
+    "install-frontend": "cd FrontEnd/news-app && npm install",
+    "build": "cd FrontEnd/news-app && npm run build",
+    "start": "npm run dev"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "keywords": ["news", "aggregation", "fastapi", "react", "fullstack"],
+  "author": "Your Name",
+  "license": "MIT"
+}
