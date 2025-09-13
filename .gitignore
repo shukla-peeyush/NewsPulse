@@ -64,6 +64,11 @@ models/*.pth
 models/*.bin
 *.model
 
+# Specific large PyTorch files
+BackEnd/venv/lib/python3.9/site-packages/torch/lib/libtorch_cpu.dylib
+BackEnd/venv/lib/python3.9/site-packages/torch/lib/libtorch_cuda.so
+BackEnd/venv/lib/python3.9/site-packages/torch/lib/libtorch.so
+
 # Database files
 *.db
 *.sqlite
