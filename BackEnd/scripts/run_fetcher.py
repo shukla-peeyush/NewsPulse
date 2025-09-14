@@ -1,53 +1,56 @@
+#!/usr/bin/env python3
 """
-Manual News Fetching Script
+Cross-platform RSS Fetcher Script
+Fetches news articles from configured RSS sources
 """
 
-import sys
 import os
+import sys
 import asyncio
+import platform
+from pathlib import Path
 
-# Add app to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+# Add src to Python path
+script_dir = Path(__file__).parent.parent
+sys.path.insert(0, str(script_dir / "src"))
 
-from app.database import SessionLocal
-from app.services import fetch_news_manually
-import logging
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-
-async def main():
-    """Run news fetching manually"""
+def main():
+    """Main fetcher function"""
+    print("🔄 NewsPulse RSS Fetcher")
+    print(f"🖥️  Platform: {platform.system()}")
+    print("-" * 40)
     
-    logger.info("Starting manual news fetching...")
-    
-    db = SessionLocal()
     try:
-        result = await fetch_news_manually(db)
+        # Import after path setup
+        from src.fetcher.rss import process_all_feeds
+        from src.storage.database import init_database
         
-        logger.info("Fetching completed!")
-        logger.info(f"Results: {result}")
+        print("📊 Initializing database...")
+        init_database()
         
-        print("\n" + "="*50)
-        print("FETCHING RESULTS")
-        print("="*50)
-        print(f"Total articles fetched: {result['total_articles']}")
-        print(f"Sources processed: {result['sources_processed']}/{result['total_sources']}")
+        print("🔍 Starting RSS feed processing...")
         
-        if result['errors']:
-            print(f"Errors encountered: {len(result['errors'])}")
-            for error in result['errors']:
-                print(f"  - {error}")
+        # Run the async fetcher
+        stats = asyncio.run(process_all_feeds())
         
-        print("="*50)
+        print("\n✅ RSS Fetching Complete!")
+        print(f"📈 Statistics:")
+        print(f"   • Sources processed: {stats.get('total_sources', 0)}")
+        print(f"   • Articles found: {stats.get('total_articles_found', 0)}")
+        print(f"   • New articles: {stats.get('total_articles_new', 0)}")
+        print(f"   • Duplicates skipped: {stats.get('total_articles_duplicate', 0)}")
         
+        if stats.get('total_errors', 0) > 0:
+            print(f"   ⚠️  Errors: {stats.get('total_errors', 0)}")
+        
+    except ImportError as e:
+        print(f"❌ Import error: {e}")
+        print("💡 Make sure you're running from the BackEnd directory")
+        print("💡 And that all dependencies are installed: pip install -r requirements.txt")
+        sys.exit(1)
     except Exception as e:
-        logger.error(f"Error during fetching: {e}")
-        print(f"Error: {e}")
-    finally:
-        db.close()
-
+        print(f"❌ Error during RSS fetching: {e}")
+        sys.exit(1)
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()

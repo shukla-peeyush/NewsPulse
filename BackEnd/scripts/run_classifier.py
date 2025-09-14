@@ -1,95 +1,91 @@
+#!/usr/bin/env python3
 """
-Manual Article Classification Script
+Cross-platform ML Classifier Script
+Classifies articles using ML models (FinBERT + custom models)
 """
 
-import sys
 import os
+import sys
+import platform
+from pathlib import Path
 
-# Add app to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
-
-from app.database import SessionLocal
-from app.models import Article
-from app.services import ArticleClassifier
-import logging
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
+# Add src to Python path
+script_dir = Path(__file__).parent.parent
+sys.path.insert(0, str(script_dir / "src"))
 
 def main():
-    """Run article classification manually"""
-    
-    logger.info("Starting manual article classification...")
-    
-    db = SessionLocal()
-    classifier = ArticleClassifier()
+    """Main classifier function"""
+    print("🤖 NewsPulse ML Classifier")
+    print(f"🖥️  Platform: {platform.system()}")
+    print("-" * 40)
     
     try:
-        # Get unclassified articles
-        unclassified_articles = db.query(Article).filter(
-            Article.primary_category.is_(None)
-        ).all()
+        # Import after path setup
+        from src.classifier.ml_classifier import MLClassifier
+        from src.storage.database import get_db_session
+        from src.storage.models_simple import Article
         
-        if not unclassified_articles:
-            print("No unclassified articles found!")
+        print("🧠 Initializing ML Classifier...")
+        classifier = MLClassifier()
+        
+        if not classifier.model_loaded:
+            print("⚠️  ML models not available. Using fallback classification.")
+            print("💡 To use ML classification, install: pip install torch transformers scikit-learn")
+        
+        print("📊 Getting unclassified articles...")
+        db = get_db_session()
+        
+        # Get articles that need classification
+        unclassified = db.query(Article).filter(
+            (Article.relevance_score == None) | 
+            (Article.primary_category == None)
+        ).limit(100).all()
+        
+        if not unclassified:
+            print("✅ No articles need classification!")
             return
         
-        print(f"Found {len(unclassified_articles)} unclassified articles")
+        print(f"🔍 Found {len(unclassified)} articles to classify...")
         
         classified_count = 0
-        failed_count = 0
-        
-        for article in unclassified_articles:
+        for article in unclassified:
             try:
-                # Classify article
-                classification = classifier.classify_article(
-                    article.title or "",
-                    article.summary or "",
-                    article.content or ""
-                )
+                print(f"📝 Classifying: {article.title[:60]}...")
                 
-                # Update article
-                success = classifier.update_article_classification(article, classification)
+                # Classify the article
+                result = classifier.classify_article(article)
                 
-                if success:
+                if result.get('success', False):
+                    # Update article with classification results
+                    article.relevance_score = int(result.get('relevance_score', 0))
+                    article.primary_category = result.get('primary_category')
+                    article.confidence_level = result.get('confidence_level', 'low')
+                    
+                    db.commit()
                     classified_count += 1
-                    logger.info(f"Classified: {article.title[:50]}... -> {classification['primary_category']}")
+                    
+                    print(f"   ✅ Category: {article.primary_category}, Score: {article.relevance_score}")
                 else:
-                    failed_count += 1
-                    logger.error(f"Failed to classify: {article.title[:50]}...")
-                
+                    print(f"   ⚠️  Classification failed: {result.get('error', 'Unknown error')}")
+                    
             except Exception as e:
-                failed_count += 1
-                logger.error(f"Error classifying article {article.id}: {e}")
+                print(f"   ❌ Error classifying article: {e}")
+                db.rollback()
+                continue
         
-        # Commit changes
-        db.commit()
-        
-        print("\n" + "="*50)
-        print("CLASSIFICATION RESULTS")
-        print("="*50)
-        print(f"Total articles processed: {len(unclassified_articles)}")
-        print(f"Successfully classified: {classified_count}")
-        print(f"Failed: {failed_count}")
-        
-        # Show category distribution
-        category_stats = classifier.get_category_stats(db)
-        if category_stats.get('category_counts'):
-            print("\nCategory Distribution:")
-            for category, count in category_stats['category_counts'].items():
-                if count > 0:
-                    print(f"  {category}: {count}")
-        
-        print("="*50)
-        
-    except Exception as e:
-        logger.error(f"Error during classification: {e}")
-        db.rollback()
-        print(f"Error: {e}")
-    finally:
         db.close()
-
+        
+        print(f"\n✅ Classification Complete!")
+        print(f"📈 Successfully classified {classified_count}/{len(unclassified)} articles")
+        
+    except ImportError as e:
+        print(f"❌ Import error: {e}")
+        print("💡 Make sure you're running from the BackEnd directory")
+        print("💡 And that all dependencies are installed: pip install -r requirements.txt")
+        sys.exit(1)
+    except Exception as e:
+        print(f"❌ Error during classification: {e}")
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()

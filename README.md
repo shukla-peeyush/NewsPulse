@@ -15,66 +15,123 @@ git clone https://github.com/shukla-peeyush/NewsPulse.git
 cd NewsPulse
 ```
 
-### 2. Backend Setup
-```bash
-# Navigate to backend directory
+## 🖥️ Cross-Platform Setup
+
+### Windows Users
+
+#### Option A: Using Batch Script (Easiest)
+```cmd
 cd BackEnd
-
-# Create Python virtual environment
-python -m venv venv
-
-# Activate virtual environment
-# On macOS/Linux:
-source venv/bin/activate
-# On Windows:
-# venv\Scripts\activate
-
-# Install Python dependencies
-pip install -r requirements.txt
-
-# Copy environment configuration
-cp .env.example .env
-# Edit .env file with your settings if needed
-
-# Initialize database (optional - will be created automatically)
-python init_database.py
+start.bat
 ```
 
-### 3. Frontend Setup
+#### Option B: Manual Setup
+```cmd
+cd BackEnd
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+python scripts\init_database.py
+python run_server.py
+```
+
+### macOS/Linux Users
+
+#### Option A: Using Shell Script (Easiest)
 ```bash
-# Navigate to frontend directory (from root)
+cd BackEnd
+chmod +x start.sh
+./start.sh
+```
+
+#### Option B: Manual Setup
+```bash
+cd BackEnd
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python scripts/init_database.py
+python run_server.py
+```
+
+### Universal Python Script (All Platforms)
+```bash
+cd BackEnd
+python start.py  # Works on Windows, macOS, and Linux
+```
+
+## 🔧 Backend Services
+
+### 1. API Server
+```bash
+# Start the main API server
+cd BackEnd
+python run_server.py
+# Server available at: http://localhost:8000
+# API docs at: http://localhost:8000/docs
+```
+
+### 2. RSS Fetcher (News Collection)
+```bash
+# Fetch articles from RSS feeds
+cd BackEnd
+python scripts/run_fetcher.py
+```
+
+### 3. ML Classifier (Article Classification)
+```bash
+# Classify articles using ML models
+cd BackEnd
+python scripts/run_classifier.py
+```
+
+### 4. Database Initialization
+```bash
+# Set up database with sample sources
+cd BackEnd
+python scripts/init_database.py
+```
+
+## ⚛️ Frontend Setup
+
+### All Platforms
+```bash
+# Navigate to frontend directory
 cd FrontEnd/news-app
 
-# Install Node.js dependencies
+# Install dependencies
 npm install
+
+# Start development server
+npm run dev
+# Frontend available at: http://localhost:5173
 ```
 
-### 4. Run the Application
+## 🛠️ Complete Development Workflow
 
-#### Option A: Run Both Services Simultaneously (Recommended)
+### Option 1: Automated Setup (Recommended)
 ```bash
 # From root directory
-npm install  # Install root dev dependencies
-npm run dev  # Starts both backend and frontend
+npm install              # Install root dev dependencies
+npm run install-all      # Install both backend and frontend deps
+npm run dev             # Start both services simultaneously
 ```
 
-#### Option B: Run Services Individually
+### Option 2: Manual Setup
 ```bash
 # Terminal 1 - Backend
 cd BackEnd
-source venv/bin/activate  # Activate virtual environment
-python run_server.py
+python start.py         # Cross-platform startup
 
-# Terminal 2 - Frontend
+# Terminal 2 - Frontend  
 cd FrontEnd/news-app
 npm run dev
-```
 
-### 5. Access the Application
-- **Frontend**: http://localhost:5173 (React app)
-- **Backend API**: http://localhost:8000 (FastAPI server)
-- **API Documentation**: http://localhost:8000/docs (Swagger UI)
-- **Health Check**: http://localhost:8000/health
+# Terminal 3 - Data Collection (Optional)
+cd BackEnd
+python scripts/run_fetcher.py      # Fetch news articles
+python scripts/run_classifier.py   # Classify articles
+```
 
 ## 📁 Project Structure
 
@@ -96,9 +153,16 @@ NewsPulse/
 │   │   ├── monitoring/       # Logging & metrics
 │   │   ├── cache/            # Redis caching layer
 │   │   └── utils/            # Shared utilities
+│   ├── scripts/              # Cross-platform utility scripts
+│   │   ├── init_database.py  # Database setup
+│   │   ├── run_fetcher.py    # RSS feed fetcher
+│   │   └── run_classifier.py # ML article classifier
 │   ├── data/                 # SQLite database storage
-│   ├── requirements.txt      # Python dependencies
+│   ├── requirements.txt      # Python dependencies (cross-platform)
 │   ├── .env.example          # Environment template
+│   ├── start.py              # Cross-platform startup script
+│   ├── start.bat             # Windows batch script
+│   ├── start.sh              # Unix/Linux/macOS shell script
 │   └── run_server.py         # Main server entry point
 │
 └── ⚛️ FrontEnd/news-app/     # React + Vite Frontend
@@ -111,44 +175,36 @@ NewsPulse/
     └── vite.config.js        # Vite configuration
 ```
 
-## 🔧 Development Features
-
-### Backend Capabilities
-- **RSS Feed Aggregation**: Async processing of multiple news sources
-- **ML Classification**: FinBERT + custom models for article categorization
-- **Content Deduplication**: SHA256-based duplicate detection
-- **RESTful API**: Comprehensive endpoints with pagination and filtering
-- **Authentication**: JWT-based user management
-- **Caching**: Redis integration for performance
-- **Monitoring**: Logging and metrics collection
-
-### Frontend Features
-- **Responsive Design**: Mobile-first with Tailwind CSS
-- **Dark Mode**: System preference detection and toggle
-- **Real-time Search**: Client-side filtering and search
-- **User Preferences**: Category saving and personalization
-- **Bookmark System**: Article saving functionality
-- **Modal System**: Detailed article viewing
-- **Error Handling**: Comprehensive error boundaries
-
-## 🛠️ Available Commands
+## 🔧 Available Commands
 
 ### Root Level Commands
 ```bash
-npm run dev          # Run both frontend and backend
-npm run backend      # Run backend only
-npm run frontend     # Run frontend only
-npm run install-all  # Install all dependencies
-npm run build        # Build frontend for production
+npm run dev              # Run both frontend and backend
+npm run backend          # Run backend only  
+npm run frontend         # Run frontend only
+npm run install-all      # Install all dependencies
+npm run build           # Build frontend for production
 ```
 
-### Backend Commands
+### Backend Commands (Cross-Platform)
 ```bash
 cd BackEnd
-python run_server.py           # Start API server
-python run_fetcher.py          # Run RSS fetcher
-python run_ml_classifier.py    # Run ML classification
-python init_database.py        # Initialize database
+
+# Server Management
+python start.py                    # Cross-platform startup
+python run_server.py              # Start API server only
+
+# Data Management  
+python scripts/init_database.py   # Initialize database
+python scripts/run_fetcher.py     # Fetch RSS articles
+python scripts/run_classifier.py  # Classify articles with ML
+
+# Platform-Specific Quick Start
+# Windows:
+start.bat
+
+# macOS/Linux:
+./start.sh
 ```
 
 ### Frontend Commands
@@ -188,8 +244,9 @@ The application uses **SQLite** by default for development, with **PostgreSQL** 
 - **ScrapingSession**: RSS processing session tracking
 
 ### Database Location
-- Development: `BackEnd/data/newspulse.db`
-- Production: Configurable via `DATABASE_URL` environment variable
+- **Windows**: `BackEnd\data\newspulse.db`
+- **macOS/Linux**: `BackEnd/data/newspulse.db`
+- **Production**: Configurable via `DATABASE_URL` environment variable
 
 ## 🔐 Environment Configuration
 
@@ -215,6 +272,43 @@ ACCESS_TOKEN_EXPIRE_MINUTES=30
 CORS_ORIGINS=http://localhost:3000,http://localhost:5173
 ```
 
+## 🤖 Machine Learning Features
+
+### Automatic Article Classification
+The system uses advanced ML models to automatically categorize news articles:
+
+- **FinBERT**: Financial domain-specific BERT model
+- **Custom Models**: Trained on fintech/payments data
+- **Categories**: PAYMENTS, FUNDING, REGULATION, PRODUCT LAUNCH, etc.
+- **Relevance Scoring**: 0-100 relevance score for each article
+
+### Running ML Classification
+```bash
+cd BackEnd
+python scripts/run_classifier.py
+```
+
+## 🔄 Data Collection Workflow
+
+### 1. Initialize Database
+```bash
+python scripts/init_database.py
+```
+
+### 2. Fetch Articles
+```bash
+python scripts/run_fetcher.py
+```
+
+### 3. Classify Articles
+```bash
+python scripts/run_classifier.py
+```
+
+### 4. View Results
+- API: http://localhost:8000/articles
+- Frontend: http://localhost:5173
+
 ## 🚀 Production Deployment
 
 ### Build for Production
@@ -236,45 +330,72 @@ npm run build
 
 ### Common Issues
 
-1. **Port conflicts**: 
-   - Backend (8000): Modify `BackEnd/run_server.py`
-   - Frontend (5173): Modify `FrontEnd/news-app/vite.config.js`
+#### 1. Python Virtual Environment Issues
+```bash
+# Windows
+cd BackEnd
+rmdir /s venv
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
 
-2. **Python virtual environment issues**:
-   ```bash
-   # Recreate virtual environment
-   cd BackEnd
-   rm -rf venv
-   python -m venv venv
-   source venv/bin/activate
-   pip install -r requirements.txt
-   ```
+# macOS/Linux
+cd BackEnd
+rm -rf venv
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
 
-3. **Node.js dependency issues**:
-   ```bash
-   # Clear npm cache and reinstall
-   cd FrontEnd/news-app
-   rm -rf node_modules package-lock.json
-   npm install
-   ```
+#### 2. Port Conflicts
+- **Backend (8000)**: Modify `BackEnd/run_server.py`
+- **Frontend (5173)**: Modify `FrontEnd/news-app/vite.config.js`
 
-4. **Database issues**:
-   ```bash
-   # Reset database
-   cd BackEnd
-   rm -f data/newspulse.db
-   python init_database.py
-   ```
+#### 3. Database Issues
+```bash
+# Windows
+cd BackEnd
+del data\newspulse.db
+python scripts\init_database.py
 
-5. **CORS issues**: 
-   - Check `BackEnd/src/api/main_simple.py` for CORS settings
-   - Ensure frontend URL is in `CORS_ORIGINS` environment variable
+# macOS/Linux
+cd BackEnd
+rm -f data/newspulse.db
+python scripts/init_database.py
+```
+
+#### 4. Node.js Dependency Issues
+```bash
+cd FrontEnd/news-app
+rm -rf node_modules package-lock.json  # macOS/Linux
+rmdir /s node_modules & del package-lock.json  # Windows
+npm install
+```
+
+#### 5. Cross-Platform Path Issues
+- Use the `start.py` script instead of platform-specific commands
+- Ensure you're using forward slashes in Python paths
+- Use `pathlib.Path` for cross-platform file operations
+
+### Platform-Specific Notes
+
+#### Windows
+- Use `python` instead of `python3`
+- Use `venv\Scripts\activate` for virtual environment
+- Use `start.bat` for quick startup
+
+#### macOS/Linux
+- Use `python3` for Python commands
+- Use `source venv/bin/activate` for virtual environment
+- Use `./start.sh` for quick startup
+- Make shell scripts executable: `chmod +x start.sh`
 
 ### Getting Help
 
 - Check the API documentation at http://localhost:8000/docs
 - Review logs in `BackEnd/backend.log`
 - Ensure all dependencies are installed with `npm run install-all`
+- Use the cross-platform `start.py` script for consistent behavior
 
 ## 🧪 Development Notes
 
@@ -290,6 +411,12 @@ npm run build
 - Frontend: Modern React hooks, TypeScript-ready
 - Linting: ESLint for frontend, Python best practices
 - Error handling: Comprehensive error boundaries and logging
+
+### Cross-Platform Compatibility
+- Unified requirements.txt without platform-specific paths
+- Cross-platform startup scripts (Python, Batch, Shell)
+- Path handling using pathlib for Windows/Unix compatibility
+- Platform detection and appropriate command selection
 
 ---
 
