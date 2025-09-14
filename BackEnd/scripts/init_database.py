@@ -11,6 +11,7 @@ from pathlib import Path
 
 # Add src to Python path
 script_dir = Path(__file__).parent.parent
+sys.path.insert(0, str(script_dir))
 sys.path.insert(0, str(script_dir / "src"))
 
 def main():

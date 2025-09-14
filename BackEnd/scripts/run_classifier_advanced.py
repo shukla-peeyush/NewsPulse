@@ -14,6 +14,7 @@ from datetime import datetime
 
 # Add src to Python path
 script_dir = Path(__file__).parent.parent
+sys.path.insert(0, str(script_dir))
 sys.path.insert(0, str(script_dir / "src"))
 
 # Configure logging
@@ -47,6 +48,15 @@ try:
 except ImportError as e:
     SQLALCHEMY_AVAILABLE = False
     logger.error(f"❌ Database modules not available: {e}")
+    # Define a dummy Article class for type hints
+    class Article:
+        def __init__(self):
+            self.id = None
+            self.title = None
+            self.content = None
+            self.primary_category = None
+            self.relevance_score = None
+            self.confidence_level = None
 
 
 class FinBERTClassifier:
