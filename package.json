@@ -4,7 +4,7 @@
   "description": "Full-stack news aggregation application",
   "scripts": {
     "dev": "concurrently \"npm run backend\" \"npm run frontend\"",
-    "backend": "cd BackEnd && python run_server.py",
+    "backend": "cd BackEnd && python3 start.py",
     "frontend": "cd FrontEnd/news-app && npm run dev",
     "install-all": "npm run install-backend && npm run install-frontend",
     "install-backend": "cd BackEnd && pip install -r requirements.txt",
