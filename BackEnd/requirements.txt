@@ -29,6 +29,8 @@ transformers==4.56.1
 scikit-learn==1.5.2
 numpy==2.0.2
 nltk==3.9.1
+tensorflow==2.18.0
+huggingface-hub==0.26.5
 
 # Data Processing
 pandas==2.2.3
