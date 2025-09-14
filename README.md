@@ -80,9 +80,15 @@ python scripts/run_fetcher.py
 
 ### 3. ML Classifier (Article Classification)
 ```bash
-# Classify articles using ML models
+# Basic classifier
 cd BackEnd
 python scripts/run_classifier.py
+
+# Advanced FinBERT classifier (recommended)
+python scripts/run_classifier_advanced.py
+
+# Advanced classifier with options
+python scripts/run_classifier_advanced.py --limit 50 --batch-size 4
 ```
 
 ### 4. Database Initialization
@@ -90,6 +96,15 @@ python scripts/run_classifier.py
 # Set up database with sample sources
 cd BackEnd
 python scripts/init_database.py
+```
+
+### 5. Complete ML Workflow
+```bash
+# Full pipeline: Initialize → Fetch → Classify
+cd BackEnd
+python scripts/init_database.py      # Setup database
+python scripts/run_fetcher.py         # Fetch articles
+python scripts/run_classifier_advanced.py  # Classify with FinBERT
 ```
 
 ## ⚛️ Frontend Setup
@@ -277,16 +292,40 @@ CORS_ORIGINS=http://localhost:3000,http://localhost:5173
 ### Automatic Article Classification
 The system uses advanced ML models to automatically categorize news articles:
 
-- **FinBERT**: Financial domain-specific BERT model
+- **FinBERT**: Financial domain-specific BERT model (ProsusAI/finbert)
 - **Custom Models**: Trained on fintech/payments data
-- **Categories**: PAYMENTS, FUNDING, REGULATION, PRODUCT LAUNCH, etc.
+- **Categories**: PAYMENTS, FUNDING, REGULATION, PRODUCT LAUNCH, MERGERS & ACQUISITIONS, CRYPTO, FINANCIAL CRIME, GENERAL FINTECH
 - **Relevance Scoring**: 0-100 relevance score for each article
+- **Batch Processing**: Efficient processing with error handling
+- **Intelligent Mapping**: Combines FinBERT predictions with keyword analysis
 
 ### Running ML Classification
+
+#### Basic Classifier
 ```bash
 cd BackEnd
 python scripts/run_classifier.py
 ```
+
+#### Advanced FinBERT Classifier (Recommended)
+```bash
+cd BackEnd
+# Process all unclassified articles
+python scripts/run_classifier_advanced.py
+
+# Process with limits and custom batch size
+python scripts/run_classifier_advanced.py --limit 100 --batch-size 4
+
+# View help for all options
+python scripts/run_classifier_advanced.py --help
+```
+
+#### Classification Features
+- **Intelligent Category Mapping**: Combines FinBERT sentiment with keyword analysis
+- **Confidence Scoring**: Multi-level confidence assessment (high/medium/low/very_low)
+- **Error Recovery**: Robust error handling with detailed logging
+- **Progress Tracking**: Real-time progress updates and statistics
+- **Cross-Platform**: Works on Windows, macOS, and Linux
 
 ## 🔄 Data Collection Workflow
 
