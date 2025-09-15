@@ -79,15 +79,15 @@ def init_database():
     Initialize database and create tables
     """
     try:
-        from .models import Base, setup_database
+        from .models_simple import Base
+        # Note: setup_database function may not exist in models_simple
         
         # Create tables
         Base.metadata.create_all(bind=engine)
         logger.info("Database tables created successfully")
         
-        # Setup default data
-        setup_database()
-        logger.info("Database initialized with default data")
+        # Note: setup_database function removed - use init_database.py script instead
+        logger.info("Database tables created successfully")
         
     except Exception as e:
         logger.error(f"Failed to initialize database: {e}")

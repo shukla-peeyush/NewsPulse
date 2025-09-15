@@ -12,7 +12,7 @@ import feedparser
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 
-from ..storage.models import NewsSource, Article, ScrapingSession
+from ..storage.models_simple import NewsSource, Article, ScrapingSession
 from ..storage.database import get_db_session
 
 logger = logging.getLogger(__name__)
