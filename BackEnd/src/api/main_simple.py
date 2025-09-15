@@ -197,6 +197,34 @@ async def get_article(article_id: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 
+@app.get("/articles/{article_id}/summary", tags=["Articles"])
+async def get_article_summary(article_id: str, db: Session = Depends(get_db)):
+    """Get enhanced summary for a specific article"""
+    try:
+        article = db.query(Article).filter(Article.id == article_id).first()
+        
+        if not article:
+            raise HTTPException(status_code=404, detail="Article not found")
+        
+        # Return enhanced summary (for now, just return the existing summary)
+        # In the future, this could generate AI-enhanced summaries
+        return {
+            "summary": article.summary or "No summary available",
+            "content": article.content or "",
+            "title": article.title,
+            "source_name": article.source.name if article.source else None,
+            "primary_category": article.primary_category,
+            "relevance_score": article.relevance_score,
+            "confidence_level": article.confidence_level
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching summary for article {article_id}: {e}")
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+
+
 @app.get("/sources", response_model=List[NewsSourceResponse], tags=["Sources"])
 async def get_sources(db: Session = Depends(get_db)):
     """Get all news sources"""
