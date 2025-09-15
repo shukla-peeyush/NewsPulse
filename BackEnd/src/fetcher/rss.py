@@ -138,13 +138,11 @@ class RSSFetcher:
             
             return {
                 'title': title,
-                'url': url,
+                'link': url,  # Changed from 'url' to 'link' to match Article model
                 'content_hash': content_hash,
                 'published_date': published_date,
-                'description': description,
-                'author': author,
-                'source_id': source.id,
-                'scraped_date': datetime.utcnow()
+                'summary': description,  # Changed from 'description' to 'summary'
+                'source_id': source.id
             }
             
         except Exception as e:
