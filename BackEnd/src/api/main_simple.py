@@ -201,7 +201,15 @@ async def get_article(article_id: str, db: Session = Depends(get_db)):
 async def get_article_summary(article_id: str, db: Session = Depends(get_db)):
     """Get enhanced summary for a specific article"""
     try:
-        article = db.query(Article).filter(Article.id == article_id).first()
+        # Handle UUID string conversion
+        import uuid
+        try:
+            # Try to parse as UUID
+            uuid_obj = uuid.UUID(article_id)
+            article = db.query(Article).filter(Article.id == uuid_obj).first()
+        except ValueError:
+            # If not a valid UUID, try as string
+            article = db.query(Article).filter(Article.id == article_id).first()
         
         if not article:
             raise HTTPException(status_code=404, detail="Article not found")
